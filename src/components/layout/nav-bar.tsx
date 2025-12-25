@@ -1,5 +1,6 @@
 'use client';
 import Link from 'next/link';
+import type { Route } from 'next';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,7 +11,7 @@ const links = [
   { href: '/drills', label: 'Drill' },
   { href: '/settings', label: 'Impostazioni' },
   { href: '/stats', label: 'Statistiche' },
-];
+] satisfies { href: Route; label: string }[];
 
 export default function NavBar() {
   const pathname = usePathname();
