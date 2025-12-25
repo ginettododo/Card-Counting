@@ -1,7 +1,6 @@
-import { CountingSystemId, RuleSet, ShoeConfig, BlackjackHandState, RoundOutcome } from '@/types/training';
+import { CountingSystemId, RuleSet, ShoeConfig, BlackjackHandState, RoundOutcome, Card } from '@/types/training';
 
-const CARD_VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const;
-type Card = (typeof CARD_VALUES)[number];
+const CARD_VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const satisfies readonly Card[];
 
 export interface ShoeState {
   cards: Card[];
