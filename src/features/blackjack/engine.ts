@@ -1,4 +1,4 @@
-import { CountingSystem, RuleSet, ShoeConfig, BlackjackHandState, RoundOutcome } from '@/types/training';
+import { CountingSystemId, RuleSet, ShoeConfig, BlackjackHandState, RoundOutcome } from '@/types/training';
 
 const CARD_VALUES = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'] as const;
 type Card = (typeof CARD_VALUES)[number];
@@ -16,7 +16,7 @@ export interface BlackjackRound {
   settled?: RoundOutcome;
 }
 
-export const countingMaps: Record<CountingSystem, Record<Card, number>> = {
+export const countingMaps: Record<CountingSystemId, Record<Card, number>> = {
   'hi-lo': { A: -1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 0, '8': 0, '9': 0, '10': -1, J: -1, Q: -1, K: -1 },
   ko: { A: -1, '2': 1, '3': 1, '4': 1, '5': 1, '6': 1, '7': 1, '8': 0, '9': 0, '10': -1, J: -1, Q: -1, K: -1 },
   'omega-ii': { A: 0, '2': 1, '3': 1, '4': 2, '5': 2, '6': 2, '7': 1, '8': 0, '9': -1, '10': -2, J: -2, Q: -2, K: -2 },
@@ -40,7 +40,7 @@ export function shuffle<T>(array: T[]): T[] {
   return arr;
 }
 
-export function dealCard(shoe: ShoeState, system: CountingSystem): { card: Card; shoe: ShoeState } {
+export function dealCard(shoe: ShoeState, system: CountingSystemId): { card: Card; shoe: ShoeState } {
   if (shoe.cards.length === 0) {
     return { card: 'A', shoe: buildShoe({ decks: 6, penetration: 0.75, continuousShuffle: true }) };
   }
@@ -75,7 +75,7 @@ export function evaluateHand(cards: Card[]): BlackjackHandState {
   return { hand: cards, total, soft, isBlackjack, isBusted };
 }
 
-export function startRound(shoe: ShoeState, system: CountingSystem): { shoe: ShoeState; round: BlackjackRound } {
+export function startRound(shoe: ShoeState, system: CountingSystemId): { shoe: ShoeState; round: BlackjackRound } {
   let nextShoe = shoe;
   const playerCards: Card[] = [];
   const dealerCards: Card[] = [];
@@ -97,7 +97,7 @@ export function startRound(shoe: ShoeState, system: CountingSystem): { shoe: Sho
   };
 }
 
-export function hit(shoe: ShoeState, round: BlackjackRound, handIndex: number, system: CountingSystem) {
+export function hit(shoe: ShoeState, round: BlackjackRound, handIndex: number, system: CountingSystemId) {
   const result = dealCard(shoe, system);
   const hand = round.playerHands[handIndex];
   const newHand = evaluateHand([...hand.hand, result.card]);
@@ -106,7 +106,7 @@ export function hit(shoe: ShoeState, round: BlackjackRound, handIndex: number, s
   return { shoe: result.shoe, round: { ...round, playerHands: updated } };
 }
 
-export function dealerPlay(dealer: BlackjackHandState, shoe: ShoeState, rules: RuleSet, system: CountingSystem) {
+export function dealerPlay(dealer: BlackjackHandState, shoe: ShoeState, rules: RuleSet, system: CountingSystemId) {
   let current = dealer;
   let currentShoe = shoe;
   while (current.total < 17 || (current.total === 17 && current.soft && rules.dealerHitsSoft17)) {

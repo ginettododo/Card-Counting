@@ -8,10 +8,12 @@ import { useDrillStore } from '@/state/drillStore';
 describe('drill session smoke test', () => {
   it('runs count and decision drill interactions', async () => {
     const user = userEvent.setup();
-    act(() => {
+    await act(async () => {
       useDrillStore.getState().start('mixed');
+      render(<DrillsPage />);
     });
-    render(<DrillsPage />);
+
+    await screen.findByText(/Count Drill/i);
 
     const nextButtons = await screen.findAllByText(/Next card/i);
     await user.click(nextButtons[0]);

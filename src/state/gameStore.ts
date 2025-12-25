@@ -4,6 +4,7 @@ import { defaultRules, Rules } from '@/engine/rules';
 import { createShoe } from '@/engine/shoe';
 import { Card } from '@/engine/cards';
 import { CountingSystem, getCountingSystem } from '@/counting';
+import { CountingSystemId } from '@/types/training';
 import { handValue } from '@/engine/hand';
 
 export interface GameMetrics {
@@ -13,12 +14,12 @@ export interface GameMetrics {
 
 export interface GameStore {
   rules: Rules;
-  countingSystemName: 'Hi-Lo' | 'KO';
+  countingSystemName: CountingSystemId;
   counting: CountingSystem;
   round: RoundState;
   metrics: GameMetrics;
   setRules: (rules: Rules) => void;
-  setCountingSystem: (system: 'Hi-Lo' | 'KO') => void;
+  setCountingSystem: (system: CountingSystemId) => void;
   startRound: (bet?: number) => void;
   act: (action: Action) => void;
   revealDealer: () => void;
@@ -36,8 +37,8 @@ function observeCard(counting: CountingSystem, card: Card) {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   rules: defaultRules,
-  countingSystemName: 'Hi-Lo',
-  counting: getCountingSystem('Hi-Lo', defaultRules.decks),
+  countingSystemName: 'hi-lo',
+  counting: getCountingSystem('hi-lo', defaultRules.decks),
   round: createInitialState(),
   metrics: { bankroll: 0 },
   setRules: (rules) =>

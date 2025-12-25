@@ -8,7 +8,7 @@ export type RuleSet = {
   blackjackPayout: '3:2' | '6:5';
 };
 
-export type CountingSystem = 'hi-lo' | 'ko' | 'omega-ii' | 'hi-opt-i' | 'zen';
+export type CountingSystemId = 'hi-lo' | 'ko' | 'omega-ii' | 'hi-opt-i' | 'zen';
 
 export interface ShoeConfig {
   decks: DeckCount;

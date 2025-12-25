@@ -1,10 +1,11 @@
 import Dexie, { Table } from 'dexie';
 import { Rules } from '@/engine/rules';
+import { CountingSystemId } from '@/types/training';
 
 export interface StoredSettings {
   id: string;
   rules: Rules;
-  countingSystem: 'Hi-Lo' | 'KO';
+  countingSystem: CountingSystemId;
   allowHints: boolean;
 }
 

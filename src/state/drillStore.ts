@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { Card, createDeck } from '@/engine/cards';
 import { CountingSystem, getCountingSystem } from '@/counting';
 import { Rules, defaultRules } from '@/engine/rules';
+import { CountingSystemId } from '@/types/training';
 import { recommendAction } from '@/strategy/basicStrategy';
 import { pickOne } from '@/lib/random';
 import { now } from '@/lib/time';
@@ -32,7 +33,7 @@ export interface DrillMetrics {
 
 export interface DrillStore {
   rules: Rules;
-  countingSystem: 'Hi-Lo' | 'KO';
+  countingSystem: CountingSystemId;
   system: CountingSystem;
   metrics: DrillMetrics;
   runningCount: number;
@@ -41,6 +42,7 @@ export interface DrillStore {
   submitCount: (guess: number) => boolean;
   newDecisionSpot: () => DecisionDrillState;
   submitDecision: (action: string) => boolean;
+  syncConfig: (rules: Rules, system: CountingSystemId) => void;
 }
 
 function buildRandomHand(): Card[] {
@@ -50,8 +52,8 @@ function buildRandomHand(): Card[] {
 
 export const useDrillStore = create<DrillStore>((set, get) => ({
   rules: defaultRules,
-  countingSystem: 'Hi-Lo',
-  system: getCountingSystem('Hi-Lo', defaultRules.decks),
+  countingSystem: 'hi-lo',
+  system: getCountingSystem('hi-lo', defaultRules.decks),
   metrics: {
     mode: 'count',
     score: 0,
@@ -111,7 +113,7 @@ export const useDrillStore = create<DrillStore>((set, get) => ({
   newDecisionSpot: () => {
     const player = buildRandomHand();
     const dealer = pickOne(createDeck());
-    const correctAction = recommendAction(player, dealer, defaultRules);
+    const correctAction = recommendAction(player, dealer, get().rules);
     const drill: DecisionDrillState = { player, dealer, correctAction };
     set((state) => ({ metrics: { ...state.metrics, decisionDrill: drill } }));
     return drill;
@@ -129,5 +131,13 @@ export const useDrillStore = create<DrillStore>((set, get) => ({
       },
     });
     return correct;
+  },
+  syncConfig: (rules, system) => {
+    set((state) => ({
+      rules,
+      countingSystem: system,
+      system: getCountingSystem(system, rules.decks),
+      metrics: { ...state.metrics, score: 0, attempts: 0, startedAt: null, finishedAt: null },
+    }));
   },
 }));
