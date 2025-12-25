@@ -1,14 +1,14 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { RuleSet, ShoeConfig, CountingSystem, BlackjackHandState } from '@/types/training';
+import { RuleSet, ShoeConfig, CountingSystemId, BlackjackHandState } from '@/types/training';
 import { buildShoe, startRound, hit, dealerPlay, settleRound, type ShoeState, type BlackjackRound } from '@/features/blackjack/engine';
 
 interface BlackjackState {
   rules: RuleSet;
   shoeConfig: ShoeConfig;
   shoe: ShoeState;
-  countingSystem: CountingSystem;
+  countingSystem: CountingSystemId;
   round?: BlackjackRound;
   balance: number;
   start: () => void;

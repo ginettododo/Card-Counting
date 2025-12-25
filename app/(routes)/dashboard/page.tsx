@@ -30,7 +30,7 @@ export default function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Conteggio</CardTitle>
-            <CardDescription>Hi-Lo e KO con RC/TC in tempo reale.</CardDescription>
+            <CardDescription>Hi-Lo, KO, Omega II, Hi-Opt I e Zen con RC/TC in tempo reale.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-muted">
             <p>Visibilità conforme: carte giocatore e upcard immediatamente, hole card solo su reveal.</p>

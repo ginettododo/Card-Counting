@@ -1,6 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import { useDrillStore } from '@/state/drillStore';
+import { useSettingsStore } from '@/state/settingsStore';
+import { useTelemetryStore } from '@/state/telemetryStore';
 import { Button } from '@/components/ui/button';
 import { CardView } from '@/components/table/CardView';
 
@@ -8,6 +10,8 @@ const actions = ['HIT', 'STAND', 'DOUBLE', 'SPLIT', 'SURRENDER'];
 
 export function DecisionDrillPanel() {
   const { metrics, newDecisionSpot, submitDecision } = useDrillStore();
+  const { allowHints } = useSettingsStore();
+  const { logEvent } = useTelemetryStore();
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
@@ -18,7 +22,12 @@ export function DecisionDrillPanel() {
 
   const handleSelect = (action: string) => {
     const correct = submitDecision(action);
-    setFeedback(correct ? 'Corretto' : `Errato: ${metrics.decisionDrill?.correctAction}`);
+    logEvent('drill.decision.submit', {
+      action,
+      correct,
+      expected: allowHints ? metrics.decisionDrill?.correctAction : undefined,
+    });
+    setFeedback(correct ? 'Corretto' : allowHints ? `Errato: ${metrics.decisionDrill?.correctAction}` : 'Rivedi la scelta');
     newDecisionSpot();
   };
 
@@ -59,6 +68,7 @@ export function DecisionDrillPanel() {
       </div>
       <p className="text-xs text-muted">Score: {metrics.score} / {metrics.attempts}</p>
       {feedback && <p className="text-xs font-semibold text-accent">{feedback}</p>}
+      {allowHints && <p className="text-xs text-muted">Hint: considera TC e regole di surrender prima di decidere.</p>}
     </div>
   );
 }

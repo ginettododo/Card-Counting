@@ -1,17 +1,17 @@
 'use client';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { CountingSystem } from '@/types/training';
+import { CountingSystemId } from '@/types/training';
 import { countingMaps, buildShoe, dealCard, type ShoeState } from '@/features/blackjack/engine';
 
 interface CountingState {
-  system: CountingSystem;
+  system: CountingSystemId;
   shoe: ShoeState;
   visibleCard?: string;
   runningCount: number;
   trueCount: number;
   nextCard: () => void;
-  setSystem: (system: CountingSystem) => void;
+  setSystem: (system: CountingSystemId) => void;
 }
 
 export const useCountingStore = create<CountingState>()(

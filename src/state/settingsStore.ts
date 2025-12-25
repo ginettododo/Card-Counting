@@ -1,10 +1,11 @@
 import { create } from 'zustand';
 import { defaultRules, Rules } from '@/engine/rules';
 import { loadSettings, saveSettings, StoredSettings } from '@/lib/persistence';
+import { CountingSystemId } from '@/types/training';
 
 export interface SettingsStore {
   rules: Rules;
-  countingSystem: 'Hi-Lo' | 'KO';
+  countingSystem: CountingSystemId;
   allowHints: boolean;
   hydrate: () => Promise<void>;
   update: (settings: Partial<StoredSettings>) => void;
@@ -12,7 +13,7 @@ export interface SettingsStore {
 
 export const useSettingsStore = create<SettingsStore>((set, get) => ({
   rules: defaultRules,
-  countingSystem: 'Hi-Lo',
+  countingSystem: 'hi-lo',
   allowHints: true,
   async hydrate() {
     const stored = await loadSettings();

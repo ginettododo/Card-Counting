@@ -1,20 +1,28 @@
 'use client';
 import React, { useState } from 'react';
 import { useDrillStore } from '@/state/drillStore';
+import { useSettingsStore } from '@/state/settingsStore';
+import { useTelemetryStore } from '@/state/telemetryStore';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { CardView } from '@/components/table/CardView';
 
 export function CountDrillPanel() {
-  const { metrics, start, nextCountCard, submitCount } = useDrillStore();
+  const { metrics, start, nextCountCard, submitCount, runningCount } = useDrillStore();
+  const { allowHints } = useSettingsStore();
+  const { logEvent } = useTelemetryStore();
   const [guess, setGuess] = useState('0');
+  const [feedback, setFeedback] = useState('');
 
   const handleNext = () => {
     nextCountCard();
   };
 
   const handleSubmit = () => {
-    const correct = submitCount(Number(guess));
+    const numericGuess = Number(guess);
+    const correct = submitCount(numericGuess);
+    logEvent('drill.count.submit', { guess: numericGuess, correct, runningCount, hintsEnabled: allowHints });
+    setFeedback(correct ? 'Corretto' : allowHints ? `RC atteso: ${runningCount}` : 'Ricalibra il conteggio');
     setGuess('0');
     return correct;
   };
@@ -43,6 +51,10 @@ export function CountDrillPanel() {
         </Button>
       </div>
       <p className="text-xs text-muted">Score: {metrics.score} / {metrics.attempts}</p>
+      {feedback && <p className="text-xs font-semibold text-accent">{feedback}</p>}
+      {allowHints && (
+        <p className="text-xs text-muted">Suggerimento: usa il true count arrotondato per decidere la puntata.</p>
+      )}
     </div>
   );
 }
