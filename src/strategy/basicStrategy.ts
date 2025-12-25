@@ -5,7 +5,8 @@ import { Action } from '@/engine/game';
 
 const dealerIndex = (card: Card) => (card.rank === 'A' ? 11 : card.rank === 'K' || card.rank === 'Q' || card.rank === 'J' || card.rank === '10' ? 10 : Number(card.rank));
 
-type Table = Record<string, Record<number, string>>;
+type DecisionRow = Record<number, string> & { default?: string };
+type Table = Record<number, DecisionRow>;
 
 type StrategyTables = {
   hard: Table;
